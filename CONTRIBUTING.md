@@ -39,11 +39,17 @@ These are the rules and practices for collaborating on this project with GitHub 
 - For now, only write and maintain unit tests (no integration or end-to-end tests).
 - Place unit tests in a dedicated test project or folder, following .NET conventions.
 
-## 9. Additional Suggestions
+
+## 9. Security and Secrets Management
+- Never check in secrets, passwords, API keys, or sensitive credentials to the repository.
+- Use local configuration files for secrets and environment-specific settings. These files must be listed in `.gitignore` and not checked in.
+- Review code and configuration for accidental exposure of sensitive information before committing.
+
+## 10. Additional Suggestions
 - Use clear, descriptive commit messages.
 - Keep pull requests small and focused.
 - Use consistent code formatting and naming conventions.
 - Document public APIs and important classes/methods with XML comments.
 
-## 10. Committing Code
+## 11. Committing Code
 - Once all tests are passing, commit the code.
