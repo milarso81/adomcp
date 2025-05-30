@@ -3,9 +3,12 @@
 These are the rules and practices for collaborating on this project with GitHub Copilot:
 
 ## 1. Test Driven Development (TDD)
-- All new features and bug fixes must start with a failing unit test.
-- Write the minimal code necessary to make the test pass.
-- Refactor only after tests are passing.
+- For all code where TDD is requested, follow this process:
+  1. Write a failing unit test for the new feature or bug fix.
+  2. Run the test and confirm the correct assertion is failing.
+  3. Write the simplest code necessary to make the test pass.
+  4. Refactor the code for clarity and maintainability, ensuring all tests still pass.
+- Only skip TDD if explicitly instructed.
 
 ## 2. Hexagonal Architecture (Ports & Adapters)
 - Structure code into core domain logic (inside the hexagon) and adapters (outside the hexagon).
