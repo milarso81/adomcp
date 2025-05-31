@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AdoMCP;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
@@ -10,6 +11,10 @@ builder.Logging.AddConsole(consoleLogOptions =>
     // Configure all logs to go to stderr
     consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
 });
+
+
+// Register core services for dependency injection
+builder.Services.AddSingleton<IAdoPullRequestService, AdoSdkPullRequestService>();
 
 builder.Services
     .AddMcpServer()
