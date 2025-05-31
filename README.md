@@ -1,3 +1,52 @@
+## Secure Configuration and Usage
+
+### How to Use the MCP Server Securely
+
+1. **Do not store your Azure DevOps PAT in any configuration file.**
+2. Use secure prompting and environment variable injection, as supported by VS Code and other IDEs.
+
+#### Example: VS Code MCP Server Registration
+
+Add the following to your `mcp-servers.json` or `devcontainer.json`:
+
+```json
+"inputs": [
+  {
+    "id": "ado_pat",
+    "description": "Azure DevOps Personal Access Token",
+    "type": "promptString",
+    "password": true
+  }
+],
+"servers": {
+  "ado": {
+    "type": "stdio",
+    "command": "dotnet",
+    "args": [
+      "run",
+      "--project",
+      "src/AdoMCP/AdoMCP.csproj"
+    ],
+    "env": {
+      "Ado__Pat": "${input:ado_pat}",
+      "Ado__Organization": "your-org",
+      "Ado__Project": "your-project"
+    }
+  }
+}
+```
+
+This will prompt the user for the PAT at launch and inject it securely as an environment variable.
+
+### Environment Variables
+
+The MCP server expects the following environment variables:
+
+- `Ado__Pat`: Azure DevOps Personal Access Token (PAT)
+- `Ado__Organization`: Azure DevOps organization name
+- `Ado__Project`: Azure DevOps project name
+
+**Never store secrets in files or source control. Always use secure prompts or secret managers.**
 # AdoMCP - Azure DevOps Model Context Protocol (MCP) Server
 
 AdoMCP is a Model Context Protocol (MCP) server designed to connect with Azure DevOps (ADO) and provide a unified interface for viewing pull requests, build failures, and code review comments.
