@@ -62,6 +62,7 @@ public class PullRequestTool
     {
         var org = _configuration["Ado:Organization"];
         var proj = _configuration["Ado:Project"];
+        var pat = _configuration["Ado:Pat"];
         if (string.IsNullOrWhiteSpace(org))
         {
             throw new InvalidOperationException("Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
@@ -70,6 +71,11 @@ public class PullRequestTool
         if (string.IsNullOrWhiteSpace(proj))
         {
             throw new InvalidOperationException("Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
+        }
+
+        if (string.IsNullOrWhiteSpace(pat))
+        {
+            throw new InvalidOperationException("Azure DevOps PAT is not configured. Set 'Ado:Pat' in configuration.");
         }
 
         return Task.FromResult("[]");
