@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Moq;
+using Shouldly;
 
 namespace AdoMCP.Tests;
 
@@ -67,9 +68,7 @@ public class PullRequestToolTests
             // Assert
             var expectedJson = System.Text.Json.JsonSerializer.Serialize(
                 prs);
-            Assert.Equal(
-                expectedJson,
-                result);
+            result.ShouldBe(expectedJson);
         }
 
         [Fact]
@@ -81,9 +80,7 @@ public class PullRequestToolTests
             var result = await SystemUnderTest.ListPullRequests("feature/none", "repo");
 
             // Assert
-            Assert.Equal(
-                "[]",
-                result);
+            result.ShouldBe("[]");
         }
 
         [Fact]
@@ -95,7 +92,7 @@ public class PullRequestToolTests
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingOrg.Object);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(
+            await Should.ThrowAsync<InvalidOperationException>(
                 () => toolWithBadConfig.ListPullRequests(
                     "feature/branch",
                     "repo"));
@@ -136,9 +133,7 @@ public class PullRequestToolTests
             var result = await SystemUnderTest.GetPullRequestComments("repo", 123);
 
             // Assert
-            Assert.Equal(
-                "[]",
-                result);
+            result.ShouldBe("[]");
         }
 
         [Fact]
@@ -150,7 +145,7 @@ public class PullRequestToolTests
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingOrg.Object);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(
+            await Should.ThrowAsync<InvalidOperationException>(
                 () => toolWithBadConfig.GetPullRequestComments(
                     "repo",
                     123));
@@ -166,7 +161,7 @@ public class PullRequestToolTests
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingProject.Object);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(
+            await Should.ThrowAsync<InvalidOperationException>(
                 () => toolWithBadConfig.GetPullRequestComments(
                     "repo",
                     123));
@@ -191,9 +186,7 @@ public class PullRequestToolTests
             // Assert
             var expectedJson = System.Text.Json.JsonSerializer.Serialize(
                 comments);
-            Assert.Equal(
-                expectedJson,
-                result);
+            result.ShouldBe(expectedJson);
         }
     }
 }

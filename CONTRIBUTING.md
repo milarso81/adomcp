@@ -66,8 +66,16 @@ These are the rules and practices for collaborating on this project with GitHub 
   This ensures each test gets a fresh instance while keeping the creation logic centralized and readable.
 - **Dispose pattern**: Implement `IDisposable` if tests need cleanup (rare for unit tests).
 - **Test isolation**: Each test should be independent and not rely on the state from other tests.
-- **Use `[Fact]` for simple tests**: For tests without parameters.
-- **Use `[Theory]` with `[InlineData]`**: For parameterized tests that test the same logic with different inputs.
+
+### Assertion Library
+- **Use Shouldly for assertions**: All unit test assertions should use the [Shouldly](https://shouldly.readthedocs.io/) library for fluent, readable assertions.
+  - Example:
+    ```csharp
+    result.ShouldBe(expectedJson);
+    comments.Count.ShouldBe(2);
+    await action.ShouldThrowAsync<InvalidOperationException>();
+    ```
+- Shouldly is already included as a NuGet dependency in the test project.
 
 ## 9. Code Quality and Standards
 - Follow standard .NET coding conventions and best practices.
