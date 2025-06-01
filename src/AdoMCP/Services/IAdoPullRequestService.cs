@@ -13,7 +13,11 @@ public interface IAdoPullRequestService
     /// <param name="repository">The repository name.</param>
     /// <param name="branch">The source branch to filter by.</param>
     /// <returns>A read-only list of pull requests.</returns>
-    Task<IReadOnlyList<PullRequest>> GetPullRequestsAsync(string organization, string project, string repository, string branch);
+    Task<IReadOnlyList<PullRequest>> GetPullRequestsAsync(
+        string organization,
+        string project,
+        string repository,
+        string branch);
 
     /// <summary>
     /// Retrieves comments for a specific pull request.
@@ -23,7 +27,11 @@ public interface IAdoPullRequestService
     /// <param name="repository">The repository name.</param>
     /// <param name="pullRequestId">The pull request ID.</param>
     /// <returns>A read-only list of pull request comments.</returns>
-    Task<IReadOnlyList<PullRequestComment>> GetPullRequestCommentsAsync(string organization, string project, string repository, int pullRequestId);
+    Task<IReadOnlyList<PullRequestComment>> GetPullRequestCommentsAsync(
+        string organization,
+        string project,
+        string repository,
+        int pullRequestId);
 }
 
 /// <summary>

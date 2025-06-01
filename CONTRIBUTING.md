@@ -71,6 +71,17 @@ These are the rules and practices for collaborating on this project with GitHub 
 
 ## 9. Code Quality and Standards
 - Follow standard .NET coding conventions and best practices.
+- **Method argument formatting**: When writing method signatures, list each argument on its own line, aligned vertically, as shown in `AdoSdkPullRequestService.GetPullRequestCommentsAsync`. This improves readability and makes it easier to see and document each parameter. Example:
+  ```csharp
+  public async Task<IReadOnlyList<PullRequestComment>> GetPullRequestCommentsAsync(
+      string organization,
+      string project,
+      string repository,
+      int pullRequestId)
+  {
+      // ...
+  }
+  ```
 - **StyleCop Analyzers**: The project uses StyleCop to enforce consistent code style and quality.
   - StyleCop warnings are treated as errors and will prevent builds from succeeding.
   - Configuration is defined in `stylecop.json` and `stylecop.ruleset` files.

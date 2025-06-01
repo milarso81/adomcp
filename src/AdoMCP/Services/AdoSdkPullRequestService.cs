@@ -29,7 +29,11 @@ public class AdoSdkPullRequestService : IAdoPullRequestService
     /// <param name="repository">The repository name.</param>
     /// <param name="branch">The branch name.</param>
     /// <returns>A list of pull requests for the specified branch.</returns>
-    public async Task<IReadOnlyList<PullRequest>> GetPullRequestsAsync(string organization, string project, string repository, string branch)
+    public async Task<IReadOnlyList<PullRequest>> GetPullRequestsAsync(
+        string organization,
+        string project,
+        string repository,
+        string branch)
     {
         var pat = this._configuration["Ado:Pat"];
         if (string.IsNullOrWhiteSpace(pat))
@@ -88,7 +92,6 @@ public class AdoSdkPullRequestService : IAdoPullRequestService
         using var connection = new VssConnection(new Uri(orgUrl), creds);
         var gitClient = await connection.GetClientAsync<GitHttpClient>();
 
-        // Get pull request comments (threads)
         var threads = await gitClient.GetThreadsAsync(
             project: project,
             repositoryId: repository,
