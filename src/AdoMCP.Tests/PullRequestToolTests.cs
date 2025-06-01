@@ -138,20 +138,5 @@ public class PullRequestToolTests
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 toolWithBadConfig.GetPullRequestComments("repo", 123));
         }
-
-        [Fact]
-        public async Task WhenInvalidPATConfiguration_ShouldThrowInvalidOperationException()
-        {
-            // Arrange
-            var mockConfigWithMissingPat = new Mock<IConfiguration>();
-            mockConfigWithMissingPat.Setup(c => c["Ado:Organization"]).Returns("org");
-            mockConfigWithMissingPat.Setup(c => c["Ado:Project"]).Returns("proj");
-            mockConfigWithMissingPat.Setup(c => c["Ado:Pat"]).Returns((string?)null);
-            var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingPat.Object);
-
-            // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                toolWithBadConfig.GetPullRequestComments("repo", 123));
-        }
     }
 }

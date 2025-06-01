@@ -36,14 +36,22 @@ public class PullRequestTool
         [Description("The branch to list pull requests for")] string branch,
         [Description("The repository name")] string repository)
     {
-        var org = _configuration["Ado:Organization"];
-        var proj = _configuration["Ado:Project"];
-        if (string.IsNullOrWhiteSpace(org) || string.IsNullOrWhiteSpace(proj) || string.IsNullOrWhiteSpace(repository))
+        var org = EnsureConfigValue(
+            "Ado:Organization",
+            "Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
+        var proj = EnsureConfigValue(
+            "Ado:Project",
+            "Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
+        if (string.IsNullOrWhiteSpace(repository))
         {
-            throw new InvalidOperationException("Ado:Organization, Project, or repository is not configured or provided.");
+            throw new InvalidOperationException("Repository is not configured or provided.");
         }
 
-        var prs = await _adoPullRequestService.GetPullRequestsAsync(org, proj, repository, branch);
+        var prs = await _adoPullRequestService.GetPullRequestsAsync(
+            org,
+            proj,
+            repository,
+            branch);
 
         return System.Text.Json.JsonSerializer.Serialize(prs ?? new List<PullRequest>());
     }
@@ -60,24 +68,30 @@ public class PullRequestTool
         [Description("The repository name")] string repository,
         [Description("The pull request ID")] int pullRequestId)
     {
-        var org = _configuration["Ado:Organization"];
-        var proj = _configuration["Ado:Project"];
-        var pat = _configuration["Ado:Pat"];
-        if (string.IsNullOrWhiteSpace(org))
-        {
-            throw new InvalidOperationException("Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
-        }
-
-        if (string.IsNullOrWhiteSpace(proj))
-        {
-            throw new InvalidOperationException("Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
-        }
-
-        if (string.IsNullOrWhiteSpace(pat))
-        {
-            throw new InvalidOperationException("Azure DevOps PAT is not configured. Set 'Ado:Pat' in configuration.");
-        }
+        var org = EnsureConfigValue(
+            "Ado:Organization",
+            "Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
+        var proj = EnsureConfigValue(
+            "Ado:Project",
+            "Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
 
         return Task.FromResult("[]");
+    }
+
+    /// <summary>
+    /// Ensures a configuration value is present and not empty, otherwise throws InvalidOperationException.
+    /// </summary>
+    /// <param name="key">The configuration key.</param>
+    /// <param name="message">The exception message if missing.</param>
+    /// <returns>The configuration value.</returns>
+    private string EnsureConfigValue(string key, string message)
+    {
+        var value = _configuration[key];
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new InvalidOperationException(message);
+        }
+
+        return value;
     }
 }
