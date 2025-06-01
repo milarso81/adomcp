@@ -124,5 +124,19 @@ public class PullRequestToolTests
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 toolWithBadConfig.GetPullRequestComments("repo", 123));
         }
+
+        [Fact]
+        public async Task WhenInvalidProjectConfiguration_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var mockConfigWithMissingProject = new Mock<IConfiguration>();
+            mockConfigWithMissingProject.Setup(c => c["Ado:Organization"]).Returns("org");
+            mockConfigWithMissingProject.Setup(c => c["Ado:Project"]).Returns((string?)null);
+            var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingProject.Object);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                toolWithBadConfig.GetPullRequestComments("repo", 123));
+        }
     }
 }
