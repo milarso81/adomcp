@@ -25,7 +25,9 @@ public class AdoSdkPullRequestService : IAdoPullRequestService
         using var connection = new VssConnection(new Uri(orgUrl), creds);
         var gitClient = await connection.GetClientAsync<GitHttpClient>();
 
+        // Pass the project name to the SDK call
         var prList = await gitClient.GetPullRequestsAsync(
+            project: project,
             repositoryId: repository,
             searchCriteria: new GitPullRequestSearchCriteria
             {

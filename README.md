@@ -12,7 +12,7 @@ docker build -t adomcp-server .
 ### Run the Container (with secure PAT injection)
 
 ```sh
-docker run --rm \
+docker run --rm -i \
   -e Ado__Pat="<your-pat>" \
   -e Ado__Organization="your-org" \
   -e Ado__Project="your-project" \
