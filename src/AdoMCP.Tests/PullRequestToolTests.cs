@@ -5,6 +5,12 @@ namespace AdoMCP.Tests;
 
 public class PullRequestToolTests
 {
+    /// <summary>
+    /// Tests for listing pull requests functionality.
+    /// Validates the MCP tool requirement from main-features.md: "Display Current Pull Requests"
+    /// - System must retrieve and display all open PRs for the repository and branch.
+    /// - System must accept the name of the current branch as input.
+    /// </summary>
     public class ListPullRequestTests
     {
         private readonly Mock<IAdoPullRequestService> _mockService;
@@ -18,7 +24,9 @@ public class PullRequestToolTests
             _mockConfig.Setup(c => c["Ado:Project"]).Returns("proj");
         }
 
-        private PullRequestTool SystemUnderTest => new PullRequestTool(_mockService.Object, _mockConfig.Object);
+        private PullRequestTool SystemUnderTest => new PullRequestTool(
+            _mockService.Object,
+            _mockConfig.Object);
 
         [Fact]
         public async Task WhenPullRequestsExist_ShouldReturnPullRequestsAsJsonList()
