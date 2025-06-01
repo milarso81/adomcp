@@ -60,6 +60,12 @@ public class PullRequestTool
         [Description("The repository name")] string repository,
         [Description("The pull request ID")] int pullRequestId)
     {
+        var org = _configuration["Ado:Organization"];
+        if (string.IsNullOrWhiteSpace(org))
+        {
+            throw new InvalidOperationException("Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
+        }
+
         return Task.FromResult("[]");
     }
 }

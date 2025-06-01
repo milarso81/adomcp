@@ -111,5 +111,18 @@ public class PullRequestToolTests
             // Assert
             Assert.Equal("[]", result);
         }
+
+        [Fact]
+        public async Task WhenInvalidOrgConfiguration_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var mockConfigWithMissingOrg = new Mock<IConfiguration>();
+            mockConfigWithMissingOrg.Setup(c => c["Ado:Organization"]).Returns((string?)null);
+            var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingOrg.Object);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                toolWithBadConfig.GetPullRequestComments("repo", 123));
+        }
     }
 }
