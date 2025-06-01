@@ -5,15 +5,30 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AdoMCP;
 
+/// <summary>
+/// Implements pull request service using Azure DevOps SDK.
+/// </summary>
 public class AdoSdkPullRequestService : IAdoPullRequestService
 {
     private readonly IConfiguration _configuration;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdoSdkPullRequestService"/> class.
+    /// </summary>
+    /// <param name="configuration">The application configuration.</param>
     public AdoSdkPullRequestService(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Gets pull requests for the specified branch in the given repository.
+    /// </summary>
+    /// <param name="organization">The Azure DevOps organization.</param>
+    /// <param name="project">The project name.</param>
+    /// <param name="repository">The repository name.</param>
+    /// <param name="branch">The branch name.</param>
+    /// <returns>A list of pull requests for the specified branch.</returns>
     public async Task<IReadOnlyList<PullRequest>> GetPullRequestsAsync(string organization, string project, string repository, string branch)
     {
         var pat = _configuration["Ado:Pat"];
@@ -25,7 +40,9 @@ public class AdoSdkPullRequestService : IAdoPullRequestService
         var orgUrl = $"https://dev.azure.com/{organization}";
         var creds = new VssBasicCredential(string.Empty, pat);
         using var connection = new VssConnection(new Uri(orgUrl), creds);
-        var gitClient = await connection.GetClientAsync<GitHttpClient>();        // Pass the project name to the SDK call
+        var gitClient = await connection.GetClientAsync<GitHttpClient>();
+
+        // Pass the project name to the SDK call
         var pullRequests = await gitClient.GetPullRequestsAsync(
             project: project,
             repositoryId: repository,
