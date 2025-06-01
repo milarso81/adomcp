@@ -68,11 +68,28 @@ These are the rules and practices for collaborating on this project with GitHub 
 - Use local configuration files for secrets and environment-specific settings. These files must be listed in `.gitignore` and not checked in.
 - Review code and configuration for accidental exposure of sensitive information before committing.
 
-## 10. Additional Suggestions
+## 10. Code Quality and Standards
+- Follow standard .NET coding conventions and best practices.
+- **StyleCop Analyzers**: The project uses StyleCop to enforce consistent code style and quality.
+  - StyleCop warnings are treated as errors and will prevent builds from succeeding.
+  - Configuration is defined in `stylecop.json` and `stylecop.ruleset` files.
+  - Key rules enforced:
+    - Proper spacing, indentation, and formatting
+    - Consistent naming conventions (PascalCase for public members, camelCase for parameters, underscore prefix for private fields)
+    - Required documentation for public APIs (main project only - not required for unit tests)
+    - Consistent ordering of using statements and class members
+    - Proper file organization (one type per file, matching file names)
+  - **Test Projects**: Unit test projects have a separate StyleCop configuration that disables documentation requirements while maintaining all other code quality rules.
 - Use clear, descriptive commit messages.
 - Keep pull requests small and focused.
 - Use consistent code formatting and naming conventions.
-- Document public APIs and important classes/methods with XML comments.
+- Document public APIs and important classes/methods with XML comments (main project only).
 
-## 11. Committing Code
-- Once all tests are passing, commit the code.
+## 11. Security and Secrets Management
+- Never check in secrets, passwords, API keys, or sensitive credentials to the repository.
+- Use local configuration files for secrets and environment-specific settings. These files must be listed in `.gitignore` and not checked in.
+- Review code and configuration for accidental exposure of sensitive information before committing.
+
+## 12. Committing Code
+- Once all tests are passing and StyleCop rules are satisfied, commit the code.
+- Ensure the build succeeds without warnings before committing.

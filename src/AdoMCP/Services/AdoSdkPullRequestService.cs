@@ -18,33 +18,31 @@ public class AdoSdkPullRequestService : IAdoPullRequestService
     {
         var pat = _configuration["Ado:Pat"];
         if (string.IsNullOrWhiteSpace(pat))
+        {
             throw new InvalidOperationException("Azure DevOps PAT is not configured. Set 'Ado:Pat' in configuration.");
+        }
 
         var orgUrl = $"https://dev.azure.com/{organization}";
         var creds = new VssBasicCredential(string.Empty, pat);
         using var connection = new VssConnection(new Uri(orgUrl), creds);
-        var gitClient = await connection.GetClientAsync<GitHttpClient>();
-
-        // Pass the project name to the SDK call
-        var prList = await gitClient.GetPullRequestsAsync(
+        var gitClient = await connection.GetClientAsync<GitHttpClient>();        // Pass the project name to the SDK call
+        var pullRequests = await gitClient.GetPullRequestsAsync(
             project: project,
             repositoryId: repository,
             searchCriteria: new GitPullRequestSearchCriteria
             {
                 Status = PullRequestStatus.Active,
-                SourceRefName = $"refs/heads/{branch}"
+                SourceRefName = $"refs/heads/{branch}",
             },
-            top: 100 // limit for demo
-        );
+            top: 100); // limit for demo
 
-        return prList.Select(pr => new PullRequest(
+        return pullRequests.Select(pr => new PullRequest(
             pr.PullRequestId,
             pr.Title ?? string.Empty,
             pr.CreatedBy?.DisplayName ?? string.Empty,
             pr.SourceRefName ?? string.Empty,
             pr.TargetRefName ?? string.Empty,
             pr.Status.ToString(),
-            pr.CreationDate
-        )).ToList();
+            pr.CreationDate)).ToList();
     }
 }

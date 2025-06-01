@@ -6,11 +6,10 @@ public interface IAdoPullRequestService
 }
 
 public record PullRequest(
-    int Id,
-    string Title,
-    string CreatedBy,
-    string SourceBranch,
-    string TargetBranch,
-    string Status,
-    DateTime CreatedDate
-);
+    int id,
+    string title,
+    string createdBy,
+    string sourceBranch,
+    string targetBranch,
+    string status,
+    DateTime createdDate);
