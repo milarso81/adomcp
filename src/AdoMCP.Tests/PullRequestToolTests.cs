@@ -9,7 +9,6 @@ public class PullRequestToolTests
     {
         private readonly Mock<IAdoPullRequestService> _mockService;
         private readonly Mock<IConfiguration> _mockConfig;
-        private readonly PullRequestTool _pullRequestTool;
 
         public ListPullRequestTests()
         {
@@ -17,8 +16,9 @@ public class PullRequestToolTests
             _mockConfig = new Mock<IConfiguration>();
             _mockConfig.Setup(c => c["Ado:Organization"]).Returns("org");
             _mockConfig.Setup(c => c["Ado:Project"]).Returns("proj");
-            _pullRequestTool = new PullRequestTool(_mockService.Object, _mockConfig.Object);
         }
+
+        private PullRequestTool SystemUnderTest => new PullRequestTool(_mockService.Object, _mockConfig.Object);
 
         [Fact]
         public async Task WhenPullRequestsExist_ShouldReturnPullRequestsAsJsonList()
@@ -34,7 +34,7 @@ public class PullRequestToolTests
                 .ReturnsAsync(prs);
 
             // Act
-            var result = await _pullRequestTool.ListPullRequests("feature/branch", "repo");
+            var result = await SystemUnderTest.ListPullRequests("feature/branch", "repo");
 
             // Assert
             var expectedJson = System.Text.Json.JsonSerializer.Serialize(prs);
@@ -47,7 +47,7 @@ public class PullRequestToolTests
             // Arrange
             _mockService.Setup(s => s.GetPullRequestsAsync("org", "proj", "repo", "feature/none"))
                 .ReturnsAsync(new List<PullRequest>());            // Act
-            var result = await _pullRequestTool.ListPullRequests("feature/none", "repo");
+            var result = await SystemUnderTest.ListPullRequests("feature/none", "repo");
 
             // Assert
             Assert.Equal("[]", result);
