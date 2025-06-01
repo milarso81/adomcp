@@ -57,6 +57,13 @@ These are the rules and practices for collaborating on this project with GitHub 
 ### xUnit Best Practices
 - **Constructor for setup**: Use the class constructor for common test setup (mocks, test data). xUnit creates a new instance for each test.
 - **Member variables for shared resources**: Use private readonly fields for mocks and test data that are used across multiple tests.
+- **System Under Test pattern**: Create the system under test using a property that returns a fresh instance:
+  ```csharp
+  private PullRequestTool SystemUnderTest => new PullRequestTool(
+      _mockService.Object,
+      _mockConfig.Object);
+  ```
+  This ensures each test gets a fresh instance while keeping the creation logic centralized and readable.
 - **Dispose pattern**: Implement `IDisposable` if tests need cleanup (rare for unit tests).
 - **Test isolation**: Each test should be independent and not rely on the state from other tests.
 - **Use `[Fact]` for simple tests**: For tests without parameters.
