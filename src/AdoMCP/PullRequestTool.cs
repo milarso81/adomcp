@@ -8,32 +8,42 @@ namespace AdoMCP;
 /// Provides tools for interacting with Azure DevOps pull requests via MCP.
 /// </summary>
 [McpServerToolType]
-public static class PullRequestTool
+public class PullRequestTool
 {
+    private readonly IAdoPullRequestService _adoPullRequestService;
+    private readonly IConfiguration _configuration;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PullRequestTool"/> class.
+    /// </summary>
+    /// <param name="adoPullRequestService">The Azure DevOps pull request service.</param>
+    /// <param name="configuration">The application configuration.</param>
+    public PullRequestTool(IAdoPullRequestService adoPullRequestService, IConfiguration configuration)
+    {
+        _adoPullRequestService = adoPullRequestService;
+        _configuration = configuration;
+    }
+
     /// <summary>
     /// Lists pull requests for the given branch in the configured repository.
     /// </summary>
     /// <param name="branch">The branch to list pull requests for.</param>
     /// <param name="repository">The repository name.</param>
-    /// <param name="adoPullRequestService">The Azure DevOps pull request service.</param>
-    /// <param name="configuration">The application configuration.</param>
     /// <returns>A JSON string containing the list of pull requests.</returns>
     [McpServerTool]
     [Description("List pull requests for the given branch in the configured repository.")]
-    public static async Task<string> ListPullRequests(
+    public async Task<string> ListPullRequests(
         [Description("The branch to list pull requests for")] string branch,
-        [Description("The repository name")] string repository,
-        IAdoPullRequestService adoPullRequestService,
-        IConfiguration configuration)
+        [Description("The repository name")] string repository)
     {
-        var org = configuration["Ado:Organization"];
-        var proj = configuration["Ado:Project"];
+        var org = _configuration["Ado:Organization"];
+        var proj = _configuration["Ado:Project"];
         if (string.IsNullOrWhiteSpace(org) || string.IsNullOrWhiteSpace(proj) || string.IsNullOrWhiteSpace(repository))
         {
             throw new InvalidOperationException("Ado:Organization, Project, or repository is not configured or provided.");
         }
 
-        var prs = await adoPullRequestService.GetPullRequestsAsync(org, proj, repository, branch);
+        var prs = await _adoPullRequestService.GetPullRequestsAsync(org, proj, repository, branch);
 
         return System.Text.Json.JsonSerializer.Serialize(prs ?? new List<PullRequest>());
     }

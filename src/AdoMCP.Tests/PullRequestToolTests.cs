@@ -9,6 +9,7 @@ public class PullRequestToolTests
     {
         private readonly Mock<IAdoPullRequestService> _mockService;
         private readonly Mock<IConfiguration> _mockConfig;
+        private readonly PullRequestTool _pullRequestTool;
 
         public ListPullRequestTests()
         {
@@ -16,6 +17,7 @@ public class PullRequestToolTests
             _mockConfig = new Mock<IConfiguration>();
             _mockConfig.Setup(c => c["Ado:Organization"]).Returns("org");
             _mockConfig.Setup(c => c["Ado:Project"]).Returns("proj");
+            _pullRequestTool = new PullRequestTool(_mockService.Object, _mockConfig.Object);
         }
 
         [Fact]
@@ -32,8 +34,7 @@ public class PullRequestToolTests
                 .ReturnsAsync(prs);
 
             // Act
-            var result = await PullRequestTool.ListPullRequests(
-                "feature/branch", "repo", _mockService.Object, _mockConfig.Object);
+            var result = await _pullRequestTool.ListPullRequests("feature/branch", "repo");
 
             // Assert
             var expectedJson = System.Text.Json.JsonSerializer.Serialize(prs);
@@ -45,11 +46,8 @@ public class PullRequestToolTests
         {
             // Arrange
             _mockService.Setup(s => s.GetPullRequestsAsync("org", "proj", "repo", "feature/none"))
-                .ReturnsAsync(new List<PullRequest>());
-
-            // Act
-            var result = await PullRequestTool.ListPullRequests(
-                "feature/none", "repo", _mockService.Object, _mockConfig.Object);
+                .ReturnsAsync(new List<PullRequest>());            // Act
+            var result = await _pullRequestTool.ListPullRequests("feature/none", "repo");
 
             // Assert
             Assert.Equal("[]", result);
@@ -61,10 +59,11 @@ public class PullRequestToolTests
             // Arrange
             var mockConfigWithMissingOrg = new Mock<IConfiguration>();
             mockConfigWithMissingOrg.Setup(c => c["Ado:Organization"]).Returns((string?)null);
+            var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingOrg.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                PullRequestTool.ListPullRequests("feature/branch", "repo", _mockService.Object, mockConfigWithMissingOrg.Object));
+                toolWithBadConfig.ListPullRequests("feature/branch", "repo"));
         }
     }
 }
