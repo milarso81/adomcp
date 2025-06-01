@@ -1,0 +1,11 @@
+bin/
+obj/
+*.user
+*.vs
+.vscode/
+.git/
+.gitignore
+src/AdoMCP/bin/
+src/AdoMCP/obj/
+**/*.md
+**/*.log

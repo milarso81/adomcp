@@ -1,3 +1,57 @@
+
+## Docker Support
+
+You can build and run the MCP server as a Docker container for easy deployment and consistent environments.
+
+### Build the Docker Image
+
+```sh
+docker build -t adomcp-server .
+```
+
+### Run the Container (with secure PAT injection)
+
+```sh
+docker run --rm \
+  -e Ado__Pat="<your-pat>" \
+  -e Ado__Organization="your-org" \
+  -e Ado__Project="your-project" \
+  adomcp-server
+```
+
+**Security Note:**
+- Never bake secrets into the image. Always pass them at runtime using environment variables or secret managers.
+- The container will not start if required secrets are missing.
+
+### Example: Using with VS Code MCP Server Registration
+
+You can prompt for the PAT and inject it into the container using VS Code's `mcp-servers.json` or `devcontainer.json`:
+
+```json
+"inputs": [
+  {
+    "id": "ado_pat",
+    "description": "Azure DevOps Personal Access Token",
+    "type": "promptString",
+    "password": true
+  }
+],
+"servers": {
+  "ado": {
+    "type": "stdio",
+    "command": "docker",
+    "args": [
+      "run",
+      "-i",
+      "--rm",
+      "-e", "Ado__Pat=${input:ado_pat}",
+      "-e", "Ado__Organization=your-org",
+      "-e", "Ado__Project=your-project",
+      "adomcp-server"
+    ]
+  }
+}
+```
 ## Secure Configuration and Usage
 
 ### How to Use the MCP Server Securely
