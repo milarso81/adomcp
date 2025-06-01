@@ -15,10 +15,12 @@
       "usingDirectivesPlacement": "outsideNamespace",
       "blankLinesBetweenUsingGroups": "allow",
       "systemUsingDirectivesFirst": true
-    },
-    "namingRules": {
+    },    "namingRules": {
       "allowCommonHungarianPrefixes": false,
-      "allowedHungarianPrefixes": []
+      "allowedHungarianPrefixes": [],
+      "allowedNamespaceComponents": [],
+      "includeInferredTupleElementNames": false,
+      "tupleElementNameCasing": "camelCase"
     },
     "maintainabilityRules": {
       "topLevelTypes": [

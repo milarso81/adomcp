@@ -18,7 +18,7 @@ public class AdoSdkPullRequestService : IAdoPullRequestService
     /// <param name="configuration">The application configuration.</param>
     public AdoSdkPullRequestService(IConfiguration configuration)
     {
-        _configuration = configuration;
+        this._configuration = configuration;
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public class AdoSdkPullRequestService : IAdoPullRequestService
     /// <returns>A list of pull requests for the specified branch.</returns>
     public async Task<IReadOnlyList<PullRequest>> GetPullRequestsAsync(string organization, string project, string repository, string branch)
     {
-        var pat = _configuration["Ado:Pat"];
+        var pat = this._configuration["Ado:Pat"];
         if (string.IsNullOrWhiteSpace(pat))
         {
             throw new InvalidOperationException("Azure DevOps PAT is not configured. Set 'Ado:Pat' in configuration.");

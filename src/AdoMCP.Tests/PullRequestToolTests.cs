@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Xunit;
 
 namespace AdoMCP.Tests;
 
@@ -28,9 +24,10 @@ public class PullRequestToolTests
             // Arrange
             var prs = new List<PullRequest>
             {
-                new(1, "Title1", "Alice", "feature/branch", "main", "active", new DateTime(2025, 5, 30)),
-                new(2, "Title2", "Bob", "feature/branch", "main", "active", new DateTime(2025, 5, 29))
+                new (1, "Title1", "Alice", "feature/branch", "main", "active", new DateTime(2025, 5, 30)),
+                new (2, "Title2", "Bob", "feature/branch", "main", "active", new DateTime(2025, 5, 29)),
             };
+
             _mockService.Setup(s => s.GetPullRequestsAsync("org", "proj", "repo", "feature/branch"))
                 .ReturnsAsync(prs);
 
@@ -70,5 +67,4 @@ public class PullRequestToolTests
                 PullRequestTool.ListPullRequests("feature/branch", "repo", _mockService.Object, mockConfigWithMissingOrg.Object));
         }
     }
-    
 }

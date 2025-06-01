@@ -1,6 +1,4 @@
-using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using ModelContextProtocol.Server;
 
@@ -36,6 +34,7 @@ public static class PullRequestTool
         }
 
         var prs = await adoPullRequestService.GetPullRequestsAsync(org, proj, repository, branch);
+
         return System.Text.Json.JsonSerializer.Serialize(prs ?? new List<PullRequest>());
     }
 }
