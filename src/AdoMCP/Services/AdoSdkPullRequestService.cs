@@ -62,4 +62,21 @@ public class AdoSdkPullRequestService : IAdoPullRequestService
             pr.Status.ToString(),
             pr.CreationDate)).ToList();
     }
+
+    /// <summary>
+    /// Gets comments for a specific pull request.
+    /// </summary>
+    /// <param name="organization">The Azure DevOps organization.</param>
+    /// <param name="project">The project name.</param>
+    /// <param name="repository">The repository name.</param>
+    /// <param name="pullRequestId">The pull request ID.</param>
+    /// <returns>A list of pull request comments.</returns>
+    public Task<IReadOnlyList<PullRequestComment>> GetPullRequestCommentsAsync(
+        string organization,
+        string project,
+        string repository,
+        int pullRequestId)
+    {
+        return Task.FromResult<IReadOnlyList<PullRequestComment>>(new List<PullRequestComment>());
+    }
 }

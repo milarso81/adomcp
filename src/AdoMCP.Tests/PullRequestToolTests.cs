@@ -74,4 +74,42 @@ public class PullRequestToolTests
                 toolWithBadConfig.ListPullRequests("feature/branch", "repo"));
         }
     }
+
+    /// <summary>
+    /// Tests for listing pull requests comments functionality.
+    /// Validates the MCP tool requirement from main-features.md: "PR Selection and Review Comments"
+    /// - System must retrieve and display all comments for the specified pull request.
+    /// - System must accept the ID of the pull request as input.
+    /// </summary>
+    public class PullRequestCommentTests
+    {
+        private readonly Mock<IAdoPullRequestService> _mockService;
+        private readonly Mock<IConfiguration> _mockConfig;
+
+        public PullRequestCommentTests()
+        {
+            _mockService = new Mock<IAdoPullRequestService>();
+            _mockConfig = new Mock<IConfiguration>();
+            _mockConfig.Setup(c => c["Ado:Organization"]).Returns("org");
+            _mockConfig.Setup(c => c["Ado:Project"]).Returns("proj");
+        }
+
+        private PullRequestTool SystemUnderTest => new PullRequestTool(
+            _mockService.Object,
+            _mockConfig.Object);
+
+        [Fact]
+        public async Task WhenThereAreNoComments_ShouldReturnEmptyList()
+        {
+            // Arrange
+            _mockService.Setup(s => s.GetPullRequestCommentsAsync("org", "proj", "repo", 123))
+                .ReturnsAsync(new List<PullRequestComment>());
+
+            // Act
+            var result = await SystemUnderTest.GetPullRequestComments("repo", 123);
+
+            // Assert
+            Assert.Equal("[]", result);
+        }
+    }
 }

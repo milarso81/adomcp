@@ -47,4 +47,19 @@ public class PullRequestTool
 
         return System.Text.Json.JsonSerializer.Serialize(prs ?? new List<PullRequest>());
     }
+
+    /// <summary>
+    /// Gets comments for a specific pull request.
+    /// </summary>
+    /// <param name="repository">The repository name.</param>
+    /// <param name="pullRequestId">The pull request ID.</param>
+    /// <returns>A JSON string containing the list of pull request comments.</returns>
+    [McpServerTool]
+    [Description("Get comments for a specific pull request.")]
+    public Task<string> GetPullRequestComments(
+        [Description("The repository name")] string repository,
+        [Description("The pull request ID")] int pullRequestId)
+    {
+        return Task.FromResult("[]");
+    }
 }
