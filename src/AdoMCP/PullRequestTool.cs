@@ -75,7 +75,26 @@ public class PullRequestTool
             "Ado:Project",
             "Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
 
-        return Task.FromResult("[]");
+        return GetPullRequestCommentsInternal(
+            org,
+            proj,
+            repository,
+            pullRequestId);
+    }
+
+    private async Task<string> GetPullRequestCommentsInternal(
+        string organization,
+        string project,
+        string repository,
+        int pullRequestId)
+    {
+        var comments = await _adoPullRequestService.GetPullRequestCommentsAsync(
+            organization,
+            project,
+            repository,
+            pullRequestId);
+
+        return System.Text.Json.JsonSerializer.Serialize(comments ?? new List<PullRequestComment>());
     }
 
     /// <summary>

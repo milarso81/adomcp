@@ -34,19 +34,42 @@ public class PullRequestToolTests
             // Arrange
             var prs = new List<PullRequest>
             {
-                new (1, "Title1", "Alice", "feature/branch", "main", "active", new DateTime(2025, 5, 30)),
-                new (2, "Title2", "Bob", "feature/branch", "main", "active", new DateTime(2025, 5, 29)),
+                new (
+                    id: 1,
+                    title: "Title1",
+                    createdBy: "Alice",
+                    sourceBranch: "feature/branch",
+                    targetBranch: "main",
+                    status: "active",
+                    createdDate: new DateTime(2025, 5, 30)),
+                new (
+                    id: 2,
+                    title: "Title2",
+                    createdBy: "Bob",
+                    sourceBranch: "feature/branch",
+                    targetBranch: "main",
+                    status: "active",
+                    createdDate: new DateTime(2025, 5, 29)),
             };
 
-            _mockService.Setup(s => s.GetPullRequestsAsync("org", "proj", "repo", "feature/branch"))
-                .ReturnsAsync(prs);
+            _mockService.Setup(
+                s => s.GetPullRequestsAsync(
+                    "org",
+                    "proj",
+                    "repo",
+                    "feature/branch"))
+                .ReturnsAsync(
+                    prs);
 
             // Act
             var result = await SystemUnderTest.ListPullRequests("feature/branch", "repo");
 
             // Assert
-            var expectedJson = System.Text.Json.JsonSerializer.Serialize(prs);
-            Assert.Equal(expectedJson, result);
+            var expectedJson = System.Text.Json.JsonSerializer.Serialize(
+                prs);
+            Assert.Equal(
+                expectedJson,
+                result);
         }
 
         [Fact]
@@ -58,7 +81,9 @@ public class PullRequestToolTests
             var result = await SystemUnderTest.ListPullRequests("feature/none", "repo");
 
             // Assert
-            Assert.Equal("[]", result);
+            Assert.Equal(
+                "[]",
+                result);
         }
 
         [Fact]
@@ -70,8 +95,10 @@ public class PullRequestToolTests
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingOrg.Object);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                toolWithBadConfig.ListPullRequests("feature/branch", "repo"));
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                () => toolWithBadConfig.ListPullRequests(
+                    "feature/branch",
+                    "repo"));
         }
     }
 
@@ -109,7 +136,9 @@ public class PullRequestToolTests
             var result = await SystemUnderTest.GetPullRequestComments("repo", 123);
 
             // Assert
-            Assert.Equal("[]", result);
+            Assert.Equal(
+                "[]",
+                result);
         }
 
         [Fact]
@@ -121,8 +150,10 @@ public class PullRequestToolTests
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingOrg.Object);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                toolWithBadConfig.GetPullRequestComments("repo", 123));
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                () => toolWithBadConfig.GetPullRequestComments(
+                    "repo",
+                    123));
         }
 
         [Fact]
@@ -135,8 +166,34 @@ public class PullRequestToolTests
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingProject.Object);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                toolWithBadConfig.GetPullRequestComments("repo", 123));
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                () => toolWithBadConfig.GetPullRequestComments(
+                    "repo",
+                    123));
+        }
+
+        [Fact]
+        public async Task WhenCommentsExist_ShouldReturnCommentsAsJsonList()
+        {
+            // Arrange
+            var comments = new List<PullRequestComment>
+            {
+                new (id: 1, content: "Great work!", author: "Alice", createdDate: DateTime.Now, commentType: "text"),
+                new (id: 2, content: "Needs changes.", author: "Bob", createdDate: DateTime.Now, commentType: "text"),
+            };
+
+            _mockService.Setup(s => s.GetPullRequestCommentsAsync("org", "proj", "repo", 123))
+                .ReturnsAsync(comments);
+
+            // Act
+            var result = await SystemUnderTest.GetPullRequestComments("repo", 123);
+
+            // Assert
+            var expectedJson = System.Text.Json.JsonSerializer.Serialize(
+                comments);
+            Assert.Equal(
+                expectedJson,
+                result);
         }
     }
 }
