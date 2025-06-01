@@ -152,7 +152,7 @@ Once running, the MCP server will expose endpoints to:
 - `src/AdoMCP/` - Main server implementation
 - `docs/requirements/` - Project requirements
 - `docs/adrs/` - Architecture Decision Records (ADRs)
-- `docs/copilot-instructions.md` - Copilot instructions
+- `.github/copilot-instructions.md` - GitHub Copilot instructions
 - `CONTRIBUTING.md` - Development and collaboration rules
 
 ## Development Practices
