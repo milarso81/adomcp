@@ -54,6 +54,14 @@ These are the rules and practices for collaborating on this project with GitHub 
     - `WhenConfigMissing_ShouldThrowInvalidOperationException()`
 - **Test structure**: Always follow the Arrange-Act-Assert pattern with clear comments marking each section.
 
+### xUnit Best Practices
+- **Constructor for setup**: Use the class constructor for common test setup (mocks, test data). xUnit creates a new instance for each test.
+- **Member variables for shared resources**: Use private readonly fields for mocks and test data that are used across multiple tests.
+- **Dispose pattern**: Implement `IDisposable` if tests need cleanup (rare for unit tests).
+- **Test isolation**: Each test should be independent and not rely on the state from other tests.
+- **Use `[Fact]` for simple tests**: For tests without parameters.
+- **Use `[Theory]` with `[InlineData]`**: For parameterized tests that test the same logic with different inputs.
+
 
 ## 9. Security and Secrets Management
 - Never check in secrets, passwords, API keys, or sensitive credentials to the repository.
