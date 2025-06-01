@@ -38,9 +38,21 @@ These are the rules and practices for collaborating on this project with GitHub 
   - How to run tests
   - Any prerequisites or setup steps
 
-## 8. Unit Tests Focus
+## 8. Unit Testing Standards
 - For now, only write and maintain unit tests (no integration or end-to-end tests).
 - Place unit tests in a dedicated test project or folder, following .NET conventions.
+
+### Test Organization and Naming
+- **Group tests by action**: Create inner classes within test classes to group tests by the specific action or method being tested.
+  - Example: `ListPullRequestTests`, `CreatePullRequestTests`, etc.
+- **Test method naming convention**: Use the pattern `When<Condition>_Should<ExpectedResult>()`
+  - `When<Condition>`: Describes the state or scenario being tested
+  - `Should<ExpectedResult>`: Describes the expected outcome or behavior
+  - Examples:
+    - `WhenPullRequestsExist_ShouldReturnPullRequestsAsJsonList()`
+    - `WhenNoPullRequestsExist_ShouldReturnEmptyArray()`
+    - `WhenConfigMissing_ShouldThrowInvalidOperationException()`
+- **Test structure**: Always follow the Arrange-Act-Assert pattern with clear comments marking each section.
 
 
 ## 9. Security and Secrets Management
