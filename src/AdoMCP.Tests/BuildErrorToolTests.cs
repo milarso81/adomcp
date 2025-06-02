@@ -1,0 +1,81 @@
+using System.Collections.Generic;
+using AdoMCP.Services;
+using Moq;
+using Shouldly;
+using Xunit;
+
+namespace AdoMCP.Tests;
+
+public class BuildErrorToolTests
+{
+    public class WhenBuildErrorsExist
+    {
+        private readonly Mock<IBuildErrorService> _mockBuildErrorService;
+        private readonly Mock<Microsoft.Extensions.Configuration.IConfiguration> _mockConfiguration;
+
+        public WhenBuildErrorsExist()
+        {
+            _mockBuildErrorService = new Mock<IBuildErrorService>();
+            _mockConfiguration = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
+            _mockConfiguration.Setup(c => c["Ado:Organization"]).Returns("test-org");
+        }
+
+        private BuildErrorTool SystemUnderTest => new BuildErrorTool(
+            _mockBuildErrorService.Object,
+            _mockConfiguration.Object);
+
+        [Fact]
+        public async Task ShouldReturnBuildErrorsAsJsonList()
+        {
+            // Arrange
+            int pullRequestId = 123;
+            var expectedErrors = new List<string>
+            {
+                "Build failed: error CS1001",
+                "Build failed: error CS1002",
+            };
+
+            _mockBuildErrorService
+                .Setup(s => s.GetBuildErrorsAsync("test-org", pullRequestId))
+                .ReturnsAsync(expectedErrors);
+
+            // Act
+            var result = await SystemUnderTest.GetBuildErrorsForPullRequestAsync(pullRequestId);
+
+            // Assert
+            result.ShouldBe("[\"Build failed: error CS1001\",\"Build failed: error CS1002\"]");
+        }
+    }
+
+    public class WhenConfigurationIsMissing
+    {
+        private readonly Mock<IBuildErrorService> _mockBuildErrorService;
+        private readonly Mock<Microsoft.Extensions.Configuration.IConfiguration> _mockConfiguration;
+
+        public WhenConfigurationIsMissing()
+        {
+            _mockBuildErrorService = new Mock<IBuildErrorService>();
+            _mockConfiguration = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
+        }
+
+        private BuildErrorTool SystemUnderTest => new BuildErrorTool(
+            _mockBuildErrorService.Object,
+            _mockConfiguration.Object);
+
+        [Fact]
+        public async Task AndOrganizationMissing_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            int pullRequestId = 123;
+            _mockConfiguration.Setup(cfg => cfg["Ado:Organization"]).Returns((string?)null);
+
+            // No need to setup _mockBuildErrorService for this test since it should throw before calling the service.
+
+            // Act
+            var action = () => SystemUnderTest.GetBuildErrorsForPullRequestAsync(pullRequestId);
+
+            // Assert
+            await action.ShouldThrowAsync<System.InvalidOperationException>();
+        }
+    }
+}
