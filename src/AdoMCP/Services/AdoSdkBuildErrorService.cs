@@ -44,7 +44,7 @@ namespace AdoMCP.Services
                 reasonFilter: BuildReason.PullRequest,
                 statusFilter: BuildStatus.Completed,
                 queryOrder: BuildQueryOrder.FinishTimeDescending,
-                top: 10);
+                top: 1); // Only get the most recent build
 
             // Suppress SA1305 this is not hungarian notation, just an abbreviation for pull request.
             // StyleCop warning SA1305: Field names must not use Hungarian notation.
