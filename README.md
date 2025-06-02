@@ -43,21 +43,44 @@ dotnet build
 dotnet test
 ```
 
-### 4. Run the MCP Server
+
+## Running the MCP Server
+
+### Using the terminal
+
+To start the MCP server locally using the .NET CLI, run:
+
 ```powershell
 dotnet run --project src/AdoMCP/AdoMCP.csproj
 ```
 
-## Docker Support
+You must provide the required Azure DevOps environment variables (PAT, organization, and project) either in your shell or via a launch configuration. For example:
+
+```powershell
+$env:Ado__Pat = "<your-pat>"
+$env:Ado__Organization = "your-org"
+$env:Ado__Project = "your-project"
+dotnet run --project src/AdoMCP/AdoMCP.csproj
+```
+
+Or set them inline for a single command:
+
+```powershell
+Ado__Pat="<your-pat>" Ado__Organization="your-org" Ado__Project="your-project" dotnet run --project src/AdoMCP/AdoMCP.csproj
+```
+
+> **Note:** Never store your PAT or other secrets in source control. Use secure prompts or secret managers whenever possible.
+
+### Using Docker
 
 You can build and run the MCP server as a Docker container for easy deployment and consistent environments.
 
-### Build the Docker Image
+#### Build the Docker Image
 ```sh
 docker build -t adomcp-server .
 ```
 
-### Run the Container (with secure PAT injection)
+#### Run the Container (with secure PAT injection)
 ```sh
 docker run --rm -i \
   -e Ado__Pat="<your-pat>" \
@@ -70,7 +93,7 @@ docker run --rm -i \
 - Never bake secrets into the image. Always pass them at runtime using environment variables or secret managers.
 - The container will not start if required secrets are missing.
 
-### Example: Using with VS Code MCP Server Registration
+#### Example: Using with VS Code MCP Server Registration
 
 You can prompt for the PAT and inject it into the container using VS Code's `mcp-servers.json` or `devcontainer.json`:
 
@@ -100,14 +123,12 @@ You can prompt for the PAT and inject it into the container using VS Code's `mcp
 }
 ```
 
-## Secure Configuration and Usage
-
-### How to Use the MCP Server Securely
+## How to Use the MCP Server Securely
 
 1. **Do not store your Azure DevOps PAT in any configuration file.**
 2. Use secure prompting and environment variable injection, as supported by VS Code and other IDEs.
 
-#### Example: VS Code MCP Server Registration
+### Example: VS Code MCP Server Registration
 
 Add the following to your `mcp-servers.json` or `devcontainer.json`:
 
