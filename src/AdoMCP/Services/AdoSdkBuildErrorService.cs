@@ -67,18 +67,15 @@ public class AdoSdkBuildErrorService : IBuildErrorService
                     var line = lines[i];
                     if (line.Contains("error", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Try to collect stack trace lines following the error
+                        // Collect simple stack trace: consecutive indented or 'at ' lines after error
                         var stackTraceLines = new List<string>();
                         int j = i + 1;
-                        while (j < lines.Count && (lines[j].StartsWith("   at ") || lines[j].StartsWith("    at ") || lines[j].StartsWith("\tat ") || lines[j].TrimStart().StartsWith("at ")))
+                        while (j < lines.Count && (lines[j].StartsWith(" ") || lines[j].TrimStart().StartsWith("at ")))
                         {
                             stackTraceLines.Add(lines[j]);
                             j++;
                         }
-
-                        errorDetails.Add(new BuildErrorDetail(
-                            line,
-                            stackTraceLines.Count > 0 ? string.Join("\n", stackTraceLines) : null));
+                        errorDetails.Add(new BuildErrorDetail(line, stackTraceLines.Count > 0 ? string.Join("\n", stackTraceLines) : null));
                     }
                 }
             }
