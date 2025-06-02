@@ -1,3 +1,4 @@
+
 # GitHub Copilot Instructions for This Project
 
 GitHub Copilot must follow the collaboration rules and development practices defined in the `CONTRIBUTING.md` file at the root of this repository.
@@ -5,7 +6,19 @@ GitHub Copilot must follow the collaboration rules and development practices def
 - All actions, code changes, and suggestions must comply with the guidelines in `CONTRIBUTING.md`.
 - If there is any ambiguity or conflict, the rules in `CONTRIBUTING.md` take precedence.
 - Copilot should reference and update `CONTRIBUTING.md` as the source of truth for process and standards.
-- **Always complete the full TDD cycle: Red → Green → Refactor. Do not skip the refactoring step after tests pass.**
+
+## Test Driven Development (TDD) - Stepwise Guidance
+
+- If the user does not start the process with a unit test, you must guide the user through TDD one step at a time:
+  1. **Write a single failing unit test** for the requested feature or bug fix.
+  2. **Run the unit tests** and confirm that the correct assertion is failing (show the failure and check with the user if needed).
+  3. **Write the simplest code necessary** to make the test pass.
+  4. **Pause and allow the user to review the code** and suggest refactoring or improvements before proceeding.
+  5. Only after user review and approval, continue with further refactoring or additional tests as needed.
+- If the user starts with a unit test, proceed with the standard TDD cycle as described in `CONTRIBUTING.md`.
+- **Never skip steps in the TDD cycle.**
+
+**Goal:** Ensure the user can review and influence each step of the TDD process, especially when the process is initiated without a unit test.
 
 ## PowerShell Terminal Commands
 - The user's default shell is PowerShell on Windows
