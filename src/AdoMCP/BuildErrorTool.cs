@@ -40,7 +40,7 @@ public class BuildErrorTool
             organization,
             project,
             pullRequestId);
-        return System.Text.Json.JsonSerializer.Serialize(errors ?? new List<string>());
+        return System.Text.Json.JsonSerializer.Serialize(errors ?? new List<BuildErrorDetail>());
     }
 
     /// <summary>

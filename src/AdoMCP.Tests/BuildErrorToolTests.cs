@@ -27,10 +27,10 @@ public class BuildErrorToolTests
         {
             // Arrange
             int pullRequestId = 123;
-            var expectedErrors = new List<string>
+            var expectedErrors = new List<AdoMCP.BuildErrorDetail>
             {
-                "Build failed: error CS1001",
-                "Build failed: error CS1002",
+                new ("Build failed: error CS1001", null),
+                new ("Build failed: error CS1002", null),
             };
 
             _mockBuildErrorService
@@ -41,7 +41,9 @@ public class BuildErrorToolTests
             var result = await SystemUnderTest.GetBuildErrorsForPullRequestAsync(pullRequestId);
 
             // Assert
-            result.ShouldBe("[\"Build failed: error CS1001\",\"Build failed: error CS1002\"]");
+            // Use System.Text.Json to serialize expectedErrors for comparison
+            var expectedJson = System.Text.Json.JsonSerializer.Serialize(expectedErrors);
+            result.ShouldBe(expectedJson);
         }
     }
 

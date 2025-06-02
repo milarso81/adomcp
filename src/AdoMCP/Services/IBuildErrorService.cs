@@ -7,13 +7,13 @@ namespace AdoMCP;
 public interface IBuildErrorService
 {
     /// <summary>
-    /// Gets the build errors for a given pull request.
+    /// Gets the build errors and stack traces for a given pull request.
     /// </summary>
     /// <param name="organization">The Azure DevOps organization.</param>
     /// <param name="project">The Azure DevOps project.</param>
     /// <param name="pullRequestId">The pull request ID.</param>
-    /// <returns>A list of build error messages.</returns>
-    Task<IReadOnlyList<string>> GetBuildErrorsAsync(
+    /// <returns>A list of build error details.</returns>
+    Task<IReadOnlyList<BuildErrorDetail>> GetBuildErrorsAsync(
         string organization,
         string project,
         int pullRequestId);
