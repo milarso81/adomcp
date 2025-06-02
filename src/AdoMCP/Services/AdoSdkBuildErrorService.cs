@@ -75,6 +75,7 @@ public class AdoSdkBuildErrorService : IBuildErrorService
                             stackTraceLines.Add(lines[j]);
                             j++;
                         }
+
                         errorDetails.Add(new BuildErrorDetail(line, stackTraceLines.Count > 0 ? string.Join("\n", stackTraceLines) : null));
                     }
                 }
