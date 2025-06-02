@@ -30,7 +30,7 @@ public class BuildErrorToolTests
             var expectedErrors = new List<AdoMCP.BuildErrorDetail>
             {
                 new ("Build failed: error CS1001", null),
-                new ("Build failed: error CS1002", null),
+                new ("Build failed: error CS1002", "stack trace for error CS1002"),
             };
 
             _mockBuildErrorService
