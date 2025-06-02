@@ -3,7 +3,7 @@ using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 
-namespace AdoMCP.Services
+namespace AdoMCP
 {
     /// <summary>
     /// Implements build error retrieval using Azure DevOps SDK.

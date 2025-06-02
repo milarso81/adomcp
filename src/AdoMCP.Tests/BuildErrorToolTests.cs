@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-using AdoMCP.Services;
 using Moq;
 using Shouldly;
-using Xunit;
 
 namespace AdoMCP.Tests;
 

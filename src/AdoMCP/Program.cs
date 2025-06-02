@@ -16,6 +16,11 @@ builder.Services.AddSingleton<IAdoPullRequestService, AdoSdkPullRequestService>(
 
 builder.Services.AddSingleton<PullRequestTool>();
 
+// Register build error service and tool
+builder.Services.AddSingleton<IBuildErrorService, AdoSdkBuildErrorService>();
+
+builder.Services.AddSingleton<BuildErrorTool>();
+
 builder.Services
     .AddMcpServer()
     .WithStdioServerTransport()
