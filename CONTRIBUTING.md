@@ -1,6 +1,6 @@
 # Contribution Guidelines
 
-These are the rules and practices for collaborating on this project with GitHub Copilot:
+These are the rules and practices for collaborating on this project with GitHub Copilot and humans:
 
 ## 1. Test Driven Development (TDD)
 - For all code where TDD is requested, follow this process:
