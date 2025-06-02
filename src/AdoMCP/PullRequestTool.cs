@@ -36,10 +36,10 @@ public class PullRequestTool
         [Description("The branch to list pull requests for")] string branch,
         [Description("The repository name")] string repository)
     {
-        var org = EnsureConfigValue(
+        var org = _configuration.GetSetting(
             "Ado:Organization",
             "Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
-        var proj = EnsureConfigValue(
+        var proj = _configuration.GetSetting(
             "Ado:Project",
             "Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
         if (string.IsNullOrWhiteSpace(repository))
@@ -68,10 +68,10 @@ public class PullRequestTool
         [Description("The repository name")] string repository,
         [Description("The pull request ID")] int pullRequestId)
     {
-        var org = EnsureConfigValue(
+        var org = _configuration.GetSetting(
             "Ado:Organization",
             "Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
-        var proj = EnsureConfigValue(
+        var proj = _configuration.GetSetting(
             "Ado:Project",
             "Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
 
@@ -95,22 +95,5 @@ public class PullRequestTool
             pullRequestId);
 
         return System.Text.Json.JsonSerializer.Serialize(comments ?? new List<PullRequestComment>());
-    }
-
-    /// <summary>
-    /// Ensures a configuration value is present and not empty, otherwise throws InvalidOperationException.
-    /// </summary>
-    /// <param name="key">The configuration key.</param>
-    /// <param name="message">The exception message if missing.</param>
-    /// <returns>The configuration value.</returns>
-    private string EnsureConfigValue(string key, string message)
-    {
-        var value = _configuration[key];
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new InvalidOperationException(message);
-        }
-
-        return value;
     }
 }

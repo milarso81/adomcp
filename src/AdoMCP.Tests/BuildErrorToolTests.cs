@@ -18,6 +18,7 @@ public class BuildErrorToolTests
             _mockBuildErrorService = new Mock<IBuildErrorService>();
             _mockConfiguration = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
             _mockConfiguration.Setup(c => c["Ado:Organization"]).Returns("test-org");
+            _mockConfiguration.Setup(c => c["Ado:Project"]).Returns("test-proj");
         }
 
         private BuildErrorTool SystemUnderTest => new BuildErrorTool(
@@ -36,7 +37,7 @@ public class BuildErrorToolTests
             };
 
             _mockBuildErrorService
-                .Setup(s => s.GetBuildErrorsAsync("test-org", pullRequestId))
+                .Setup(s => s.GetBuildErrorsAsync("test-org", "test-proj", pullRequestId))
                 .ReturnsAsync(expectedErrors);
 
             // Act
@@ -61,6 +62,21 @@ public class BuildErrorToolTests
         private BuildErrorTool SystemUnderTest => new BuildErrorTool(
             _mockBuildErrorService.Object,
             _mockConfiguration.Object);
+
+        [Fact]
+        public async Task AndProjectMissing_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            int pullRequestId = 123;
+            _mockConfiguration.Setup(cfg => cfg["Ado:Organization"]).Returns("test-org");
+            _mockConfiguration.Setup(cfg => cfg["Ado:Project"]).Returns((string?)null);
+
+            // Act
+            var action = () => SystemUnderTest.GetBuildErrorsForPullRequestAsync(pullRequestId);
+
+            // Assert
+            await action.ShouldThrowAsync<System.InvalidOperationException>();
+        }
 
         [Fact]
         public async Task AndOrganizationMissing_ShouldThrowInvalidOperationException()

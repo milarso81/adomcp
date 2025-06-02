@@ -33,18 +33,35 @@ namespace AdoMCP
         public async Task<string> GetBuildErrorsForPullRequestAsync(
             int pullRequestId)
         {
-            // Validate required configuration
-            string? organization = _configuration["Ado:Organization"];
-            if (string.IsNullOrWhiteSpace(organization))
-            {
-                throw new System.InvalidOperationException("Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
-            }
+            string organization = _configuration.GetSetting(
+                "Ado:Organization",
+                "Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
+            string project = _configuration.GetSetting(
+                "Ado:Project",
+                "Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
 
-            // (Other config validation can be added here as needed)
             var errors = await _service.GetBuildErrorsAsync(
                 organization,
+                project,
                 pullRequestId);
             return System.Text.Json.JsonSerializer.Serialize(errors ?? new List<string>());
+        }
+
+        /// <summary>
+        /// Ensures a configuration value is present and not empty, otherwise throws InvalidOperationException.
+        /// </summary>
+        /// <param name="key">The configuration key.</param>
+        /// <param name="message">The exception message if missing.</param>
+        /// <returns>The configuration value.</returns>
+        private string EnsureConfigValue(string key, string message)
+        {
+            string? value = _configuration[key];
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new System.InvalidOperationException(message);
+            }
+
+            return value;
         }
     }
 }
