@@ -18,6 +18,7 @@
 ## 4. Build Errors on PRs
 - The system must retrieve and display any build errors associated with the selected PR.
 - The system must allow GitHub Copilot to assist the user in fixing build errors as a separate tool.
+    - The system must retrieve and display the stack trace for each build error, if available.
 
 ## 5. Security
 - The system must not store or expose secrets, tokens, or sensitive information.
