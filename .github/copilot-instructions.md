@@ -9,14 +9,20 @@ GitHub Copilot must follow the collaboration rules and development practices def
 
 ## Test Driven Development (TDD) - Stepwise Guidance
 
-- If the user does not start the process with a unit test, you must guide the user through TDD one step at a time:
-  1. **Write a single failing unit test** for the requested feature or bug fix.
-  2. **Run the unit tests** and confirm that the correct assertion is failing (show the failure and check with the user if needed).
-  3. **Write the simplest code necessary** to make the test pass.
-  4. **Pause and allow the user to review the code** and suggest refactoring or improvements before proceeding.
-  5. Only after user review and approval, continue with further refactoring or additional tests as needed.
-- If the user starts with a unit test, proceed with the standard TDD cycle as described in `CONTRIBUTING.md`.
-- **Never skip steps in the TDD cycle.**
+**TDD Process:**
+
+If the user does not start the process with a unit test, you must guide the user through TDD one step at a time:
+
+  1. **Start with error handling and edge cases:** Write failing unit tests for error handling, invalid input, and edge cases first.
+  2. **Then write tests for the main/positive logic:** After covering edge cases, write tests for the standard/expected flows.
+  3. **Run the unit tests** and confirm that the correct assertions are failing (show the failure and check with the user if needed).
+  4. **Write the simplest code necessary** to make the tests pass.
+  5. **Pause and allow the user to review the code** and suggest refactoring or improvements before proceeding.
+  6. Only after user review and approval, continue with further refactoring or additional tests as needed.
+
+If the user starts with a unit test, proceed with the standard TDD cycle as described in `CONTRIBUTING.md`.
+
+**Never skip steps in the TDD cycle.**
 
 **Goal:** Ensure the user can review and influence each step of the TDD process, especially when the process is initiated without a unit test.
 
