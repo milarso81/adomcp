@@ -14,6 +14,8 @@ builder.Logging.AddConsole(consoleLogOptions =>
 // Register core services for dependency injection
 builder.Services.AddSingleton<IAdoPullRequestService, AdoSdkPullRequestService>();
 
+builder.Services.AddSingleton<IPullRequestChangeService, AdoSdkPullRequestChangeService>();
+
 builder.Services.AddSingleton<PullRequestTool>();
 
 builder.Services.AddSingleton<PullRequestChangeTool>();

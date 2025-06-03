@@ -26,9 +26,10 @@ public class PullRequestChangeTool
     /// <summary>
     /// Gets the file changes for a pull request as a JSON string.
     /// </summary>
+    /// <param name="repository">The repository name.</param>
     /// <param name="pullRequestId">The pull request ID.</param>
     /// <returns>A JSON string representing the file changes.</returns>
-    public Task<string> GetPullRequestChangesAsync(int pullRequestId)
+    public Task<string> GetPullRequestChangesAsync(string repository, int pullRequestId)
     {
         var organization = _configuration.GetSetting(
             "Ado:Organization",
@@ -37,7 +38,12 @@ public class PullRequestChangeTool
             "Ado:Project",
             "Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
 
-        // Minimal implementation for TDD: still not implemented for other cases
-        throw new NotImplementedException();
+        var changes = _service.GetPullRequestChangesAsync(
+            organization,
+            project,
+            repository,
+            pullRequestId).GetAwaiter().GetResult();
+
+        return Task.FromResult(System.Text.Json.JsonSerializer.Serialize(changes));
     }
 }

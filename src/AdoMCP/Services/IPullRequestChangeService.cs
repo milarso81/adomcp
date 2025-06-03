@@ -9,14 +9,14 @@ namespace AdoMCP
     public interface IPullRequestChangeService
     {
         /// <summary>
-        /// Gets the list of file changes for a given pull request.
+        /// Gets the pull request metadata and file changes for GitHub Copilot review.
         /// </summary>
         /// <param name="organization">The Azure DevOps organization.</param>
         /// <param name="project">The Azure DevOps project.</param>
         /// <param name="repository">The Azure DevOps repository.</param>
         /// <param name="pullRequestId">The pull request ID.</param>
-        /// <returns>A list of file changes in the pull request.</returns>
-        Task<IReadOnlyList<PullRequestFileChange>> GetPullRequestChangesAsync(
+        /// <returns>Pull request change information including metadata and suggested git commands.</returns>
+        Task<PullRequestChangeInfo> GetPullRequestChangesAsync(
             string organization,
             string project,
             string repository,
