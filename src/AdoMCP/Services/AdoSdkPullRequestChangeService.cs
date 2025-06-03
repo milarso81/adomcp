@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -10,6 +11,17 @@ namespace AdoMCP;
 /// <inheritdoc />
 public class AdoSdkPullRequestChangeService : IPullRequestChangeService
 {
+    private readonly IConfiguration _configuration;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdoSdkPullRequestChangeService"/> class.
+    /// </summary>
+    /// <param name="configuration">The application configuration.</param>
+    public AdoSdkPullRequestChangeService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     /// <inheritdoc />
     public async Task<PullRequestChangeInfo> GetPullRequestChangesAsync(
         string organization,
@@ -56,20 +68,6 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
         return new PullRequestChangeInfo(metadata, fileChanges);
     }
 
-    private static VssConnection CreateConnection(string organization)
-    {
-        string adoUrl = $"https://dev.azure.com/{organization}";
-        string? pat = Environment.GetEnvironmentVariable("Ado:Pat");
-
-        if (string.IsNullOrWhiteSpace(pat))
-        {
-            throw new InvalidOperationException("Azure DevOps PAT not set in environment variable 'Ado:Pat'.");
-        }
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        return new VssConnection(new Uri(adoUrl), credentials);
-    }
-
     private static PullRequestChangeInfo CreateEmptyPullRequestChangeInfo(int pullRequestId)
     {
         return new PullRequestChangeInfo(
@@ -80,5 +78,16 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
     private static string? ExtractBranchName(string? refName)
     {
         return refName?.Replace("refs/heads/", string.Empty);
+    }
+
+    private VssConnection CreateConnection(string organization)
+    {
+        string adoUrl = $"https://dev.azure.com/{organization}";
+        string pat = _configuration.GetSetting(
+            "Ado:Pat",
+            "Azure DevOps PAT is not configured. Set 'Ado:Pat' in configuration.");
+
+        var credentials = new VssBasicCredential(string.Empty, pat);
+        return new VssConnection(new Uri(adoUrl), credentials);
     }
 }
