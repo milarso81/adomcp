@@ -52,6 +52,7 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
             pullRequest.Title ?? "Unknown",
             ExtractBranchName(pullRequest.SourceRefName),
             ExtractBranchName(pullRequest.TargetRefName));
+
         return new PullRequestChangeInfo(metadata, fileChanges);
     }
 
