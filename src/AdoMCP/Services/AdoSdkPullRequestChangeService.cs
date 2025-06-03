@@ -52,18 +52,17 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
             pullRequest.Title ?? "Unknown",
             ExtractBranchName(pullRequest.SourceRefName),
             ExtractBranchName(pullRequest.TargetRefName));
-
         return new PullRequestChangeInfo(metadata, fileChanges);
     }
 
     private static VssConnection CreateConnection(string organization)
     {
         string adoUrl = $"https://dev.azure.com/{organization}";
-        string? pat = Environment.GetEnvironmentVariable("ADO_PAT");
+        string? pat = Environment.GetEnvironmentVariable("Ado:Pat");
 
         if (string.IsNullOrWhiteSpace(pat))
         {
-            throw new InvalidOperationException("Azure DevOps PAT not set in environment variable 'ADO_PAT'.");
+            throw new InvalidOperationException("Azure DevOps PAT not set in environment variable 'Ado:Pat'.");
         }
 
         var credentials = new VssBasicCredential(string.Empty, pat);

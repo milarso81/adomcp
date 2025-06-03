@@ -1,8 +1,12 @@
+using System.ComponentModel;
+using ModelContextProtocol.Server;
+
 namespace AdoMCP;
 
 /// <summary>
 /// Provides build error retrieval functionality for pull requests.
 /// </summary>
+[McpServerToolType]
 public class BuildErrorTool
 {
     private readonly IBuildErrorService _service;
@@ -26,8 +30,10 @@ public class BuildErrorTool
     /// </summary>
     /// <param name="pullRequestId">The pull request ID.</param>
     /// <returns>A JSON string representing the build errors.</returns>
+    [McpServerTool]
+    [Description("Get build errors for a pull request to help with troubleshooting and code review.")]
     public async Task<string> GetBuildErrorsForPullRequestAsync(
-        int pullRequestId)
+        [Description("The pull request ID")] int pullRequestId)
     {
         string organization = _configuration.GetSetting(
             "Ado:Organization",
