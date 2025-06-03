@@ -50,7 +50,7 @@ public record PullRequest(
     string createdBy,
     string sourceBranch,
     string targetBranch,
-    string status,    DateTime createdDate);
+    string status, DateTime createdDate);
 
 /// <summary>
 /// Represents a comment on a pull request from Azure DevOps.
