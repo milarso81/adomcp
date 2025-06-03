@@ -18,7 +18,7 @@ public class PullRequestChangeToolTests
             _mockConfiguration = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
         }
 
-        private AdoMCP.PullRequestChangeTool SystemUnderTest => new AdoMCP.PullRequestChangeTool(
+        private PullRequestChangeTool SystemUnderTest => new PullRequestChangeTool(
             _mockChangeService.Object,
             _mockConfiguration.Object);
 
@@ -27,15 +27,29 @@ public class PullRequestChangeToolTests
         {
             // Arrange
             int pullRequestId = 123;
-            _mockConfiguration.Setup(cfg => cfg["Ado:Organization"]).Returns("test-org");
-            _mockConfiguration.Setup(cfg => cfg["Ado:Project"]).Returns((string?)null);
-            _mockConfiguration.Setup(cfg => cfg["Ado:Repository"]).Returns("test-repo");
+            _ = _mockConfiguration.Setup(cfg => cfg["Ado:Organization"]).Returns("test-org");
+            _ = _mockConfiguration.Setup(cfg => cfg["Ado:Project"]).Returns((string?)null);
 
             // Act
             var action = () => SystemUnderTest.GetPullRequestChangesAsync(pullRequestId);
 
             // Assert
-            await action.ShouldThrowAsync<System.InvalidOperationException>();
+            _ = await action.ShouldThrowAsync<InvalidOperationException>();
+        }
+
+        [Fact]
+        public async Task AndOrganizationMissing_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            int pullRequestId = 123;
+            _ = _mockConfiguration.Setup(cfg => cfg["Ado:Organization"]).Returns((string?)null);
+            _ = _mockConfiguration.Setup(cfg => cfg["Ado:Project"]).Returns("test-project");
+
+            // Act
+            var action = () => SystemUnderTest.GetPullRequestChangesAsync(pullRequestId);
+
+            // Assert
+            _ = await action.ShouldThrowAsync<InvalidOperationException>();
         }
     }
 }

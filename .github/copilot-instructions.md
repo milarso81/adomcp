@@ -40,4 +40,7 @@ If the user starts with a unit test, proceed with the standard TDD cycle as desc
 ## Common Issues
 - **StyleCop SA1516 Error**: If you see `CSC : error SA1516: Elements should be separated by blank line`, this is typically a problem in `Program.cs` where elements need blank lines between them.
 
+## Formatting
+- After you finish writing code, always run `dotnet format` to ensure there are no formatting issues before considering the task complete.
+
 For details, see [CONTRIBUTING.md](../CONTRIBUTING.md).

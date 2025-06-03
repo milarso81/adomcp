@@ -13,6 +13,6 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
         string repository,
         int pullRequestId)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 }

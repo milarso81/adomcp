@@ -16,6 +16,8 @@ builder.Services.AddSingleton<IAdoPullRequestService, AdoSdkPullRequestService>(
 
 builder.Services.AddSingleton<PullRequestTool>();
 
+builder.Services.AddSingleton<PullRequestChangeTool>();
+
 // Register build error service and tool
 builder.Services.AddSingleton<IBuildErrorService, AdoSdkBuildErrorService>();
 

@@ -30,14 +30,12 @@ public class PullRequestChangeTool
     /// <returns>A JSON string representing the file changes.</returns>
     public Task<string> GetPullRequestChangesAsync(int pullRequestId)
     {
-        var organization = _configuration["Ado:Organization"];
-        var project = _configuration["Ado:Project"];
-        var repository = _configuration["Ado:Repository"];
-
-        if (string.IsNullOrWhiteSpace(project))
-        {
-            throw new InvalidOperationException("Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
-        }
+        var organization = _configuration.GetSetting(
+            "Ado:Organization",
+            "Azure DevOps organization is not configured. Set 'Ado:Organization' in configuration.");
+        var project = _configuration.GetSetting(
+            "Ado:Project",
+            "Azure DevOps project is not configured. Set 'Ado:Project' in configuration.");
 
         // Minimal implementation for TDD: still not implemented for other cases
         throw new NotImplementedException();

@@ -21,8 +21,8 @@ public class PullRequestToolTests
         {
             _mockService = new Mock<IAdoPullRequestService>();
             _mockConfig = new Mock<IConfiguration>();
-            _mockConfig.Setup(c => c["Ado:Organization"]).Returns("org");
-            _mockConfig.Setup(c => c["Ado:Project"]).Returns("proj");
+            _ = _mockConfig.Setup(c => c["Ado:Organization"]).Returns("org");
+            _ = _mockConfig.Setup(c => c["Ado:Project"]).Returns("proj");
         }
 
         private PullRequestTool SystemUnderTest => new PullRequestTool(
@@ -53,7 +53,7 @@ public class PullRequestToolTests
                     createdDate: new DateTime(2025, 5, 29)),
             };
 
-            _mockService.Setup(
+            _ = _mockService.Setup(
                 s => s.GetPullRequestsAsync(
                     "org",
                     "proj",
@@ -75,7 +75,7 @@ public class PullRequestToolTests
         public async Task WhenNoPullRequestsExist_ShouldReturnEmptyArray()
         {
             // Arrange
-            _mockService.Setup(s => s.GetPullRequestsAsync("org", "proj", "repo", "feature/none"))
+            _ = _mockService.Setup(s => s.GetPullRequestsAsync("org", "proj", "repo", "feature/none"))
                 .ReturnsAsync(new List<PullRequest>());            // Act
             var result = await SystemUnderTest.ListPullRequests("feature/none", "repo");
 
@@ -88,11 +88,11 @@ public class PullRequestToolTests
         {
             // Arrange
             var mockConfigWithMissingOrg = new Mock<IConfiguration>();
-            mockConfigWithMissingOrg.Setup(c => c["Ado:Organization"]).Returns((string?)null);
+            _ = mockConfigWithMissingOrg.Setup(c => c["Ado:Organization"]).Returns((string?)null);
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingOrg.Object);
 
             // Act & Assert
-            await Should.ThrowAsync<InvalidOperationException>(
+            _ = await Should.ThrowAsync<InvalidOperationException>(
                 () => toolWithBadConfig.ListPullRequests(
                     "feature/branch",
                     "repo"));
@@ -114,8 +114,8 @@ public class PullRequestToolTests
         {
             _mockService = new Mock<IAdoPullRequestService>();
             _mockConfig = new Mock<IConfiguration>();
-            _mockConfig.Setup(c => c["Ado:Organization"]).Returns("org");
-            _mockConfig.Setup(c => c["Ado:Project"]).Returns("proj");
+            _ = _mockConfig.Setup(c => c["Ado:Organization"]).Returns("org");
+            _ = _mockConfig.Setup(c => c["Ado:Project"]).Returns("proj");
         }
 
         private PullRequestTool SystemUnderTest => new PullRequestTool(
@@ -126,7 +126,7 @@ public class PullRequestToolTests
         public async Task WhenThereAreNoComments_ShouldReturnEmptyList()
         {
             // Arrange
-            _mockService.Setup(s => s.GetPullRequestCommentsAsync("org", "proj", "repo", 123))
+            _ = _mockService.Setup(s => s.GetPullRequestCommentsAsync("org", "proj", "repo", 123))
                 .ReturnsAsync(new List<PullRequestComment>());
 
             // Act
@@ -141,11 +141,11 @@ public class PullRequestToolTests
         {
             // Arrange
             var mockConfigWithMissingOrg = new Mock<IConfiguration>();
-            mockConfigWithMissingOrg.Setup(c => c["Ado:Organization"]).Returns((string?)null);
+            _ = mockConfigWithMissingOrg.Setup(c => c["Ado:Organization"]).Returns((string?)null);
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingOrg.Object);
 
             // Act & Assert
-            await Should.ThrowAsync<InvalidOperationException>(
+            _ = await Should.ThrowAsync<InvalidOperationException>(
                 () => toolWithBadConfig.GetPullRequestComments(
                     "repo",
                     123));
@@ -156,12 +156,12 @@ public class PullRequestToolTests
         {
             // Arrange
             var mockConfigWithMissingProject = new Mock<IConfiguration>();
-            mockConfigWithMissingProject.Setup(c => c["Ado:Organization"]).Returns("org");
-            mockConfigWithMissingProject.Setup(c => c["Ado:Project"]).Returns((string?)null);
+            _ = mockConfigWithMissingProject.Setup(c => c["Ado:Organization"]).Returns("org");
+            _ = mockConfigWithMissingProject.Setup(c => c["Ado:Project"]).Returns((string?)null);
             var toolWithBadConfig = new PullRequestTool(_mockService.Object, mockConfigWithMissingProject.Object);
 
             // Act & Assert
-            await Should.ThrowAsync<InvalidOperationException>(
+            _ = await Should.ThrowAsync<InvalidOperationException>(
                 () => toolWithBadConfig.GetPullRequestComments(
                     "repo",
                     123));
@@ -177,7 +177,7 @@ public class PullRequestToolTests
                 new (id: 2, content: "Needs changes.", author: "Bob", createdDate: DateTime.Now, commentType: "text"),
             };
 
-            _mockService.Setup(s => s.GetPullRequestCommentsAsync("org", "proj", "repo", 123))
+            _ = _mockService.Setup(s => s.GetPullRequestCommentsAsync("org", "proj", "repo", 123))
                 .ReturnsAsync(comments);
 
             // Act
