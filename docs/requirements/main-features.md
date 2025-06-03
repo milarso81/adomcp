@@ -24,6 +24,11 @@
 - The system must not store or expose secrets, tokens, or sensitive information.
 - All configuration for secrets must be handled via local, gitignored config files.
 
----
+
+## 6. Pull Request Change Review
+- The system must retrieve and display the list of files changed in a selected pull request (PR).
+- The system must provide the diff/patch for each changed file in the PR.
+- The system must expose this information via an MCP tool so GitHub Copilot can assist with PR review.
+- The system should support both a summary (file list) and detailed (diff/patch) view for each file.
 
 Additional requirements and refinements should be added as the project evolves.
