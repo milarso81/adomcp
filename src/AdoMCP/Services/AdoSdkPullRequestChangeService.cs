@@ -65,19 +65,9 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
             ExtractBranchName(pullRequest.SourceRefName),
             ExtractBranchName(pullRequest.TargetRefName));
 
-        return new PullRequestChangeInfo(metadata, fileChanges);
-    }
+        var gitSuggestions = GenerateGitSuggestions(metadata, fileChanges);
 
-    private static PullRequestChangeInfo CreateEmptyPullRequestChangeInfo(int pullRequestId)
-    {
-        return new PullRequestChangeInfo(
-            new PullRequestMetadata(pullRequestId, "Unknown", null, null),
-            Array.Empty<PullRequestFileChange>());
-    }
-
-    private static string? ExtractBranchName(string? refName)
-    {
-        return refName?.Replace("refs/heads/", string.Empty);
+        return new PullRequestChangeInfo(metadata, fileChanges, gitSuggestions);
     }
 
     private VssConnection CreateConnection(string organization)
@@ -89,5 +79,44 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
 
         var credentials = new VssBasicCredential(string.Empty, pat);
         return new VssConnection(new Uri(adoUrl), credentials);
+    }
+
+    private PullRequestChangeInfo CreateEmptyPullRequestChangeInfo(int pullRequestId)
+    {
+        return new PullRequestChangeInfo(
+            new PullRequestMetadata(pullRequestId, "Unknown", null, null),
+            Array.Empty<PullRequestFileChange>(),
+            new GitSuggestions(Array.Empty<string>(), Array.Empty<string>()));
+    }
+
+    private string? ExtractBranchName(string? refName)
+    {
+        return refName?.Replace("refs/heads/", string.Empty);
+    }
+
+    private GitSuggestions GenerateGitSuggestions(PullRequestMetadata metadata, PullRequestFileChange[] fileChanges)
+    {
+        var fileSpecificCommands = new List<string>();
+        var branchCommands = new List<string>();
+
+        // Generate file-specific git commands
+        foreach (var change in fileChanges)
+        {
+            fileSpecificCommands.Add($"git diff HEAD -- {change.filePath}");
+            if (metadata.sourceBranch != null && metadata.targetBranch != null)
+            {
+                fileSpecificCommands.Add($"git diff {metadata.targetBranch}..{metadata.sourceBranch} -- {change.filePath}");
+            }
+        }
+
+        // Generate branch comparison commands
+        if (metadata.sourceBranch != null && metadata.targetBranch != null)
+        {
+            branchCommands.Add($"git diff {metadata.targetBranch}..{metadata.sourceBranch}");
+            branchCommands.Add($"git log {metadata.targetBranch}..{metadata.sourceBranch} --oneline");
+            branchCommands.Add($"git show-branch {metadata.sourceBranch} {metadata.targetBranch}");
+        }
+
+        return new GitSuggestions(fileSpecificCommands.AsReadOnly(), branchCommands.AsReadOnly());
     }
 }

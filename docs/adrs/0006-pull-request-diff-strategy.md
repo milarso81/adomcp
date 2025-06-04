@@ -1,7 +1,9 @@
 # ADR-0006: Pull Request Diff Strategy
 
 ## Status
-Accepted
+Superseded by ADR-0007
+
+This ADR established the foundational approach of using git commands for diff operations instead of trying to generate diffs within the MCP server. ADR-0007 enhances this approach by adding explicit git command suggestions to improve GitHub Copilot integration.
 
 ## Context
 We need to provide file change information and diffs for pull requests to enable GitHub Copilot to assist with code reviews. The initial implementation attempted to retrieve actual file diffs using the Azure DevOps SDK, but this approach had several issues:
