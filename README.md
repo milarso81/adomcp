@@ -1,7 +1,11 @@
 
 # AdoMCP: Azure DevOps Model Context Protocol (MCP) Server
 
-AdoMCP is a Model Context Protocol (MCP) server that connects to Azure DevOps (ADO) and allows you to interact with your DevOps environment using the LLM tool of your choice (such as GitHub Copilot, ChatGPT, or other AI assistants). It provides a unified, language-agnostic interface for viewing and managing pull requests, code review comments, and build errors directly from your preferred AI or automation tool.
+[![CI/CD Pipeline](https://github.com/milarso81/adomcp/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/milarso81/adomcp/actions/workflows/ci-cd.yml)
+[![PR Validation](https://github.com/milarso81/adomcp/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/milarso81/adomcp/actions/workflows/pr-validation.yml)
+[![Dependabot](https://badgen.net/github/dependabot/milarso81/adomcp)](https://github.com/milarso81/adomcp/network/dependencies)
+
+AdoMCP is a Model Context Protocol (MCP) server that connects to Azure DevOps (ADO) and allows you to interact with your DevOps environment using the LLM tool of your choice (such as GitHub Copilot, ChatGPT, or other AI assistants).It provides a unified, language-agnostic interface for viewing and managing pull requests, code review comments, and build errors directly from your preferred AI or automation tool.
 
 ## Key Features
 
