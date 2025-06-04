@@ -2,7 +2,7 @@ namespace AdoMCP;
 
 /// <summary>
 /// Provides an abstraction for retrieving build errors for a pull request.
-/// Requires organization, project, and pull request ID for all operations.
+/// Requires organization, project, pull request ID, and branch name for all operations.
 /// </summary>
 public interface IBuildErrorService
 {

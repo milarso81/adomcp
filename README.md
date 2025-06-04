@@ -20,6 +20,42 @@ Once running, the MCP server exposes endpoints to:
 
 You can use any LLM-enabled tool (such as GitHub Copilot or ChatGPT) to interact with the MCP server and automate or streamline your DevOps workflows.
 
+## Example Prompts for GitHub Copilot
+
+Once the MCP server is running, you can use these example prompts with GitHub Copilot to leverage the Azure DevOps integration for various PR review scenarios:
+
+### 🔍 **Check for Build Errors on PR**
+```
+"Can you check PR #123 for any build errors and help me understand what's failing? If there are build errors, please suggest specific fixes based on the error messages and code changes in the PR."
+```
+
+### 💬 **Get Suggestions to Fix PR Comments**
+```
+"Please review all the comments on PR #456 and help me address each one. For code review feedback, suggest specific code changes. For discussion items, help me craft appropriate responses."
+```
+
+### 📋 **Help Review PRs in a Branch**
+```
+"I want to provide feedback on the 'feature/user-authentication' branch PR. Can you analyze the code changes, check for potential issues, and suggest improvements? Please focus on security, performance, and code quality."
+```
+
+### 🔄 **Comprehensive PR Review**
+```
+"Please do a complete review of PR #789. Check the code changes using git diff, look for any build errors, review existing comments, and provide a summary with actionable feedback for the author."
+```
+
+### 🚀 **PR Approval Assessment**
+```
+"Help me determine if PR #321 is ready for approval. Check for unresolved comments, build status, and do a final code review. Summarize any blocking issues that need to be addressed before merging."
+```
+
+### 🔧 **Code Quality Analysis**
+```
+"Can you analyze the code changes in PR #555 and suggest improvements for code quality, maintainability, and adherence to best practices? Use git diff to see the specific changes."
+```
+
+**💡 Pro Tip:** The tool provides git command suggestions that GitHub Copilot can use locally. You can also ask Copilot to run specific git commands like `git diff main..feature-branch` to get detailed code change analysis.
+
 ## Getting Started
 
 ### Prerequisites
