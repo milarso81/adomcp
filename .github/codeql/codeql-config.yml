@@ -1,0 +1,25 @@
+name: "CodeQL Config"
+
+# Disable the default CodeQL query suites.
+disable-default-queries: false
+
+# Use these queries in addition to the default queries.
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+# Paths to ignore during analysis
+paths-ignore:
+  - "src/**/bin/**"
+  - "src/**/obj/**"
+  - "**/TestResults/**"
+  - "**/*.Designer.cs"
+  - "**/*.generated.cs"
+
+# Paths to include during analysis (optional)
+paths:
+  - "src/**/*.cs"
+
+# Additional packs to download
+packs:
+  - "codeql/csharp-queries"

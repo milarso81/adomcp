@@ -1,0 +1,84 @@
+name: Security Scan (Alternative)
+
+on:
+  push:
+    branches: [ main, develop ]
+  schedule:
+    # Run security scan weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: List packages for audit
+      run: |
+        echo "## Dependency Audit Report" >> $GITHUB_STEP_SUMMARY
+        echo "Checking for known security vulnerabilities..." >> $GITHUB_STEP_SUMMARY
+        
+        # Check for vulnerable packages
+        if dotnet list package --vulnerable --include-transitive > audit-output.txt 2>&1; then
+          if grep -q "no vulnerable packages" audit-output.txt; then
+            echo "✅ No vulnerable packages found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Vulnerable packages detected:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat audit-output.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+        else
+          echo "ℹ️ Security audit completed with warnings" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Check for hardcoded secrets
+      run: |
+        echo "## Secret Scan Report" >> $GITHUB_STEP_SUMMARY
+        
+        # Simple regex patterns for common secrets
+        SECRET_PATTERNS=(
+          "password\s*=\s*['\"][^'\"]{8,}['\"]"
+          "api[_-]?key\s*=\s*['\"][^'\"]{16,}['\"]"
+          "secret\s*=\s*['\"][^'\"]{16,}['\"]"
+          "token\s*=\s*['\"][^'\"]{16,}['\"]"
+          "pat\s*['\"]:\s*['\"][^'\"]{32,}['\"]"
+        )
+        
+        FOUND_SECRETS=false
+        for pattern in "${SECRET_PATTERNS[@]}"; do
+          if grep -r -i -E "$pattern" src/ --exclude-dir=bin --exclude-dir=obj 2>/dev/null; then
+            FOUND_SECRETS=true
+          fi
+        done
+        
+        if [ "$FOUND_SECRETS" = true ]; then
+          echo "⚠️ Potential hardcoded secrets detected in source code" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        else
+          echo "✅ No hardcoded secrets detected" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Upload audit results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-audit-results
+        path: audit-output.txt
