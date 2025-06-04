@@ -12,7 +12,8 @@ public record PullRequestFileChange(
 /// </summary>
 public record GitSuggestions(
     IReadOnlyList<string> fileSpecificCommands,
-    IReadOnlyList<string> branchCommands);
+    IReadOnlyList<string> branchCommands,
+    string? permissionInstructions);
 
 /// <summary>
 /// Represents pull request metadata and changes for GitHub Copilot review.

@@ -83,14 +83,15 @@ public class PullRequestChangeToolTests
             };
 
             var metadata = new PullRequestMetadata(pullRequestId, "Test PR", "feature", "main");
-            var gitSuggestions = new GitSuggestions(Array.Empty<string>(), Array.Empty<string>());
+            var gitSuggestions = new GitSuggestions(Array.Empty<string>(), Array.Empty<string>(), null);
             var changeInfo = new PullRequestChangeInfo(metadata, changes, gitSuggestions);
 
             _mockChangeService.Setup(svc => svc.GetPullRequestChangesAsync(
                 "test-org", "test-project", It.IsAny<string>(), pullRequestId))
                 .ReturnsAsync(changeInfo);
+            var expectedJson = System.Text.Json.JsonSerializer.Serialize(changeInfo);
 
-            var expectedJson = System.Text.Json.JsonSerializer.Serialize(changeInfo);            // Act
+            // Act
             var result = await SystemUnderTest.GetPullRequestChangesAsync("test-repo", pullRequestId);
 
             // Assert
@@ -118,7 +119,7 @@ public class PullRequestChangeToolTests
             _mockConfiguration.Object);
 
         [Fact]
-        public async Task ShouldIncludeGitCommandsInResponse()
+        public async Task AndPullRequestHasChanges_ShouldIncludeGitCommandsAndPrompt()
         {
             // Arrange
             int pullRequestId = 123;
@@ -130,11 +131,11 @@ public class PullRequestChangeToolTests
                 new PullRequestFileChange("src/Service.cs", "Modified"),
                 new PullRequestFileChange("tests/ServiceTests.cs", "Added"),
             };
-
             var metadata = new PullRequestMetadata(pullRequestId, "Add new service", "feature/new-service", "main");
             var gitSuggestions = new GitSuggestions(
                 new[] { "git diff HEAD -- src/Service.cs", "git diff main..feature/new-service -- src/Service.cs" },
-                new[] { "git diff main..feature/new-service", "git log main..feature/new-service --oneline" });
+                new[] { "git diff main..feature/new-service", "git log main..feature/new-service --oneline" },
+                "This repository is a git repository. These commands are provided as hints to help you assist the user with code review suggestions. You can run these commands locally based on your current instructions and limitations.");
             var changeInfo = new PullRequestChangeInfo(metadata, changes, gitSuggestions);
 
             _mockChangeService.Setup(svc => svc.GetPullRequestChangesAsync(
@@ -148,69 +149,20 @@ public class PullRequestChangeToolTests
             result.ShouldNotBeNull();
             result.ShouldNotBeEmpty();
 
-            // The result should contain git context/suggestions - these should fail initially
-            result.ShouldContain("gitSuggestions");  // This should fail since we haven't implemented it yet
-            result.ShouldContain("git diff");       // This should fail since we haven't implemented it yet
-        }
+            // Should contain git suggestions structure
+            result.ShouldContain("gitSuggestions");
+            result.ShouldContain("fileSpecificCommands");
+            result.ShouldContain("branchCommands");
+            result.ShouldContain("permissionInstructions");
 
-        [Fact]
-        public async Task ShouldProvideFileSpecificGitCommands()
-        {
-            // Arrange
-            int pullRequestId = 456;
-            _mockConfiguration.Setup(cfg => cfg["Ado:Organization"]).Returns("test-org");
-            _mockConfiguration.Setup(cfg => cfg["Ado:Project"]).Returns("test-project");
+            // Should contain actual git commands
+            result.ShouldContain("git diff");
+            result.ShouldContain("git log");
 
-            var changes = new[]
-            {
-                new PullRequestFileChange("src/Calculator.cs", "Modified"),
-            };
-
-            var metadata = new PullRequestMetadata(pullRequestId, "Fix calculation bug", "bugfix/calc", "main");
-            var gitSuggestions = new GitSuggestions(Array.Empty<string>(), Array.Empty<string>());
-            var changeInfo = new PullRequestChangeInfo(metadata, changes, gitSuggestions);
-
-            _mockChangeService.Setup(svc => svc.GetPullRequestChangesAsync(
-                "test-org", "test-project", "test-repo", pullRequestId))
-                .ReturnsAsync(changeInfo);
-
-            // Act
-            var result = await SystemUnderTest.GetPullRequestChangesAsync("test-repo", pullRequestId);
-
-            // Assert
-            // Should suggest git commands that can help Copilot get diffs
-            result.ShouldContain("src/Calculator.cs");
-            result.ShouldContain("git");
-        }
-
-        [Fact]
-        public async Task ShouldProvideBranchComparisonSuggestions()
-        {
-            // Arrange
-            int pullRequestId = 789;
-            _mockConfiguration.Setup(cfg => cfg["Ado:Organization"]).Returns("test-org");
-            _mockConfiguration.Setup(cfg => cfg["Ado:Project"]).Returns("test-project");
-
-            var changes = new[]
-            {
-                new PullRequestFileChange("README.md", "Modified"),
-            };
-
-            var metadata = new PullRequestMetadata(pullRequestId, "Update documentation", "docs/update", "develop");
-            var gitSuggestions = new GitSuggestions(Array.Empty<string>(), Array.Empty<string>());
-            var changeInfo = new PullRequestChangeInfo(metadata, changes, gitSuggestions);
-
-            _mockChangeService.Setup(svc => svc.GetPullRequestChangesAsync(
-                "test-org", "test-project", "test-repo", pullRequestId))
-                .ReturnsAsync(changeInfo);
-
-            // Act
-            var result = await SystemUnderTest.GetPullRequestChangesAsync("test-repo", pullRequestId);
-
-            // Assert
-            // Should include both source and target branches for git operations
-            result.ShouldContain("docs/update");
-            result.ShouldContain("develop");
+            // Should contain the prompt for Copilot
+            result.ShouldContain("git repository");
+            result.ShouldContain("code review suggestions");
+            result.ShouldContain("current instructions and limitations");
         }
     }
 }

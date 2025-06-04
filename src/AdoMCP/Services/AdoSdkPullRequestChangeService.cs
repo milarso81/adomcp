@@ -86,7 +86,7 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
         return new PullRequestChangeInfo(
             new PullRequestMetadata(pullRequestId, "Unknown", null, null),
             Array.Empty<PullRequestFileChange>(),
-            new GitSuggestions(Array.Empty<string>(), Array.Empty<string>()));
+            new GitSuggestions(Array.Empty<string>(), Array.Empty<string>(), null));
     }
 
     private string? ExtractBranchName(string? refName)
@@ -117,6 +117,9 @@ public class AdoSdkPullRequestChangeService : IPullRequestChangeService
             branchCommands.Add($"git show-branch {metadata.sourceBranch} {metadata.targetBranch}");
         }
 
-        return new GitSuggestions(fileSpecificCommands.AsReadOnly(), branchCommands.AsReadOnly());
+        return new GitSuggestions(
+            fileSpecificCommands.AsReadOnly(),
+            branchCommands.AsReadOnly(),
+            "This repository is a git repository. These commands are provided as hints to help you assist the user with code review suggestions. You can run these commands locally based on your current instructions and limitations.");
     }
 }
